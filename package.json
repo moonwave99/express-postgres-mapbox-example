@@ -1,0 +1,16 @@
+{
+	"name": "express-postgis-example",
+	"version": "0.0.1",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"start": "node index.js"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@mapbox/mapbox-sdk": "^0.13.0",
+		"express": "^4.17.1",
+		"spiced-pg": "^1.0.4"
+	}
+}

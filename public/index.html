@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>express-postgis-example</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="/style.css" />
+	</head>
+	<body>
+		<header>
+			<h1>express-postgis-example</h1>
+		</header>
+		<main>
+			<section class="controls">
+				<header>
+					<h2>Your Itinerary</h2>
+					<button type="button" class="save">Save Itinerary</button>
+				</header>
+				<ul class="itinerary"></ul>
+				<form>
+					<input
+						type="text"
+						name="location"
+						required
+						placeholder="Search for a location..."
+					/>
+					<input type="hidden" name="location_coords" />
+					<select name="profile" required>
+						<option disabled>Select a travel method...</option>
+						<option value="driving">driving</option>
+						<option value="cycling">cycling</option>
+						<option value="walking">walking</option>
+					</select>
+					<button type="submit">Add</button>
+					<ul class="location-suggestions"></ul>
+				</form>
+			</section>
+			<figure class="map" id="map"></figure>
+		</main>
+		<footer>2020 mwlabs.</footer>
+		<script src="https://unpkg.com/axios@0.21.1/dist/axios.min.js"></script>
+		<script src="https://unpkg.com/@mapbox/mapbox-sdk/umd/mapbox-sdk.min.js"></script>
+		<link
+			href="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css"
+			rel="stylesheet"
+		/>
+		<script src="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+		<script src="/script.js"></script>
+	</body>
+</html>
