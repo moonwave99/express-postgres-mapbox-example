@@ -1,114 +1,141 @@
 * {
-	box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 body {
-	margin: 0;
-	font-family: "Helvetica Neue", sans-serif;
-	font-size: 16px;
-	display: flex;
-	flex-direction: column;
-	height: 100vh;
+    margin: 0;
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
 body > header {
-	height: 3rem;
-	background-color: dodgerblue;
-	color: white;
+    height: 3rem;
+    background-color: dodgerblue;
+    color: white;
 }
 
 body > header h1 {
-	margin: 0;
-	line-height: 3rem;
-	font-size: 1.2rem;
-	padding: 0 0.5rem;
+    margin: 0;
+    line-height: 3rem;
+    font-size: 1.2rem;
+    padding: 0 0.5rem;
+    font-weight: normal;
 }
 
 main {
-	flex: 1;
-	position: relative;
+    flex: 1;
+    position: relative;
+}
+
+button {
+    appearance: none;
+    padding: 0 0.5rem;
+    border: none;
+    border-radius: 0.25rem;
+    color: white;
+    background-color: dodgerblue;
+    transition: background-color 0.2s ease-in-out;
+}
+
+button:hover {
+    background-color: blue;
+    cursor: pointer;
 }
 
 footer {
-	background-color: rgba(0, 0, 0, 0.8);
-	line-height: 2rem;
-	font-size: 0.8rem;
-	color: rgba(255, 255, 255, 0.9);
-	padding: 0 0.5rem;
+    background-color: rgba(0, 0, 0, 0.8);
+    line-height: 2rem;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.9);
+    padding: 0 0.5rem;
+}
+
+footer a {
+    color: dodgerblue;
 }
 
 .map {
-	width: 100%;
-	height: 100%;
-	padding: 0;
-	margin: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
 }
 
 .controls {
-	position: absolute;
-	top: 1rem;
-	left: 1rem;
-	width: 400px;
-	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
-	border-radius: 0.25rem;
-	z-index: 1000;
-	background-color: white;
-	padding: 1rem;
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    width: 350px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+    border-radius: 0.25rem;
+    z-index: 1000;
+    background-color: white;
+    padding: 1rem;
 }
 
 .controls header {
-	display: flex;
-	justify-content: space-between;
+    display: flex;
+    justify-content: space-between;
 }
 
 .controls h2 {
-	margin: 0.5rem 0;
-	font-size: 1rem;
+    margin: 0.5rem 0;
+    font-size: 1rem;
 }
 
 .controls form {
-	display: flex;
-	align-items: center;
-	width: 100%;
+    display: flex;
+    align-items: center;
+    width: 100%;
 }
 
 .controls form > * {
-	height: 2rem;
+    height: 2rem;
+    margin-right: 0.5rem;
 }
 
-.controls form input[name="location"] {
-	flex: 1;
+.controls form > button {
+    margin-right: 0;
 }
 
 .controls .location-suggestions {
-	position: absolute;
-	bottom: -2.5rem;
-	left: 0;
-	margin: 0;
-	padding: 0;
-	list-style: none;
+    position: absolute;
+    bottom: -1rem;
+    left: 1rem;
+    right: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
 .controls .location-suggestions li {
-	line-height: 2.5rem;
-	background-color: white;
-	font-size: 0.8rem;
-	padding: 0 1rem;
+    line-height: 2.5rem;
+    background-color: white;
+    font-size: 0.8rem;
+    padding: 0 0.5rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .controls .location-suggestions li:hover {
-	background-color: rgba(220, 220, 220);
-	cursor: pointer;
+    background-color: dodgerblue;
+    color: white;
+    cursor: pointer;
 }
 
 .controls .itinerary {
-	margin: 1rem 0 2rem 0;
-	padding: 0;
-	list-style: none;
+    margin: 1rem 0 2rem 0;
+    padding: 0 0 0 1.5rem;
+    list-style: disc;
 }
 
 .controls .itinerary li {
-	line-height: 2.5rem;
-	font-size: 0.8rem;
-	padding: 0 0.5rem;
+    line-height: 2.5rem;
+    font-size: 0.8rem;
+    padding: 0 0.5rem;
 }
