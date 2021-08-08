@@ -34,11 +34,11 @@ And visit http://localhost:3000!
 Since we need it just for storage and not for querying, the [`jsonb` postgres type][jsonb] is enough:
 
 ```js
-function updateItineraryById({ id, steps }) {
+function updateItineraryById({ id, geometry }) {
     return db
         .query(
             "UPDATE itineraries SET geometry = ($2)::jsonb WHERE id = $1 RETURNING *",
-            [id, JSON.stringify(steps)]
+            [id, JSON.stringify(geometry)]
         )
         .then((result) => result.rows[0]);
 }
