@@ -3,16 +3,17 @@
     <head>
         <title>express-postgres-mapbox-example</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link
+            href="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css"
+            rel="stylesheet"
+        />
         <link rel="stylesheet" href="/style.css" />
     </head>
     <body>
-        <header>
-            <h1>express-postgres-mapbox-example</h1>
-        </header>
         <main>
             <section class="controls">
                 <header>
-                    <h2>Your Itinerary</h2>
+                    <h1>Your Itinerary</h1>
                     <button type="button" class="save">Save Itinerary</button>
                 </header>
                 <ul class="itinerary"></ul>
@@ -45,12 +46,7 @@
                 >mwlabs</a
             >.
         </footer>
-        <script src="https://unpkg.com/axios@0.21.1/dist/axios.min.js"></script>
         <script src="https://unpkg.com/@mapbox/mapbox-sdk/umd/mapbox-sdk.min.js"></script>
-        <link
-            href="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css"
-            rel="stylesheet"
-        />
         <script src="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
         <script src="/script.js"></script>
     </body>

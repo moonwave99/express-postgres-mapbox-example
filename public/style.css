@@ -11,20 +11,6 @@ body {
     height: 100vh;
 }
 
-body > header {
-    height: 3rem;
-    background-color: dodgerblue;
-    color: white;
-}
-
-body > header h1 {
-    margin: 0;
-    line-height: 3rem;
-    font-size: 1.2rem;
-    padding: 0 0.5rem;
-    font-weight: normal;
-}
-
 main {
     flex: 1;
     position: relative;
@@ -81,7 +67,7 @@ footer a {
     justify-content: space-between;
 }
 
-.controls h2 {
+.controls h1 {
     margin: 0.5rem 0;
     font-size: 1rem;
 }

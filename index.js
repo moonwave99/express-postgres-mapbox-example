@@ -14,6 +14,7 @@ app.get("/api/config", (request, response) => {
         center: [11.07778, 49.45278],
         style: "mapbox://styles/mapbox/streets-v11",
         zoom: 5,
+        id: 1,
     });
 });
 
@@ -30,6 +31,8 @@ app.put("/api/itineraries/:id", async (request, response) => {
     response.json(itinerary || {});
 });
 
-app.listen(3000, () =>
-    console.log("[express-postgres-mapbox-example] Listening on port 3000")
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () =>
+    console.log(`[express-postgres-mapbox-example] Listening on port ${PORT}`)
 );

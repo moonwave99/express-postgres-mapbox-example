@@ -20,12 +20,12 @@ function getItineraryById(id) {
         .then((result) => result.rows[0]);
 }
 
-function updateItineraryById({ id, steps }) {
+function updateItineraryById({ id, geometry }) {
     return db
-        .query("UPDATE itineraries SET steps = ($2)::jsonb WHERE id = $1", [
-            id,
-            JSON.stringify(steps),
-        ])
+        .query(
+            "UPDATE itineraries SET geometry = ($2)::jsonb WHERE id = $1 RETURNING *",
+            [id, JSON.stringify(geometry)]
+        )
         .then((result) => result.rows[0]);
 }
 

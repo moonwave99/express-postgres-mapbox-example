@@ -1,42 +1,30 @@
 (async function () {
     console.log("[express-postgres-mapbox-example:start]");
 
+    const RESULTS_LIMIT = 3;
+    const QUERY_MIN_LENGTH = 3;
     const PATH_COLORS = {
         driving: "green",
         cycling: "blue",
     };
 
-    const { accessToken, center, style, zoom } = await axios
-        .get("/api/config")
-        .then((response) => response.data);
+    const { accessToken, center, style, zoom, id } = await fetch(
+        "/api/config"
+    ).then((response) => response.json());
 
-    const itinerary = await axios
-        .get("/api/itineraries/1")
-        .then((response) => response.data);
+    const itinerary = await fetch(`/api/itineraries/${id}`).then((response) =>
+        response.json()
+    );
+    const itinieraryId = `itinerary_${itinerary.id}`;
 
     const { geocoding, directions } = mapboxSdk({ accessToken });
     mapboxgl.accessToken = accessToken;
-
     const map = new mapboxgl.Map({
         container: "map",
         style,
         center,
         zoom,
     });
-
-    // the first step is the itinerary start location
-    const steps = [
-        {
-            properties: {
-                id: 1,
-                name: itinerary.start_location_name,
-            },
-            geometry: {
-                coordinates: [itinerary.start_location_coordinates],
-            },
-        },
-        ...(itinerary.steps || []),
-    ];
 
     const $controls = document.querySelector(".controls");
     const $itinerary = $controls.querySelector(".itinerary");
@@ -48,16 +36,16 @@
     const $suggestions = $form.querySelector(".location-suggestions");
     const $saveButton = $controls.querySelector(".save");
 
-    $controls.querySelector("h2").innerHTML = itinerary.title;
+    $controls.querySelector("h1").innerHTML = itinerary.title;
 
     // this should be throttled, in order not to make too many requests
     $input.addEventListener("input", (event) => {
         const query = event.target.value;
-        if (query.length < 3) {
+        if (query.length < QUERY_MIN_LENGTH) {
             return;
         }
         geocoding
-            .forwardGeocode({ query, limit: 3 })
+            .forwardGeocode({ query, limit: RESULTS_LIMIT })
             .send()
             .then((response) => {
                 $suggestions.innerHTML = response.body.features
@@ -111,30 +99,68 @@
         }
 
         const step = {
+            type: "Feature",
             geometry: route.geometry,
             properties: {
-                id: getNextStepId(),
                 name: location,
                 profile,
+                color: PATH_COLORS[profile] || PATH_COLORS["driving"],
             },
         };
 
-        addStepToMap(step);
-        steps.push(step);
+        itinerary.geometry.data.features.push(step);
+        map.getSource(itinieraryId).setData(itinerary.geometry.data);
+
+        addDataItem({
+            coordinates:
+                step.geometry.coordinates[step.geometry.coordinates.length - 1],
+            name: step.properties.name,
+            map,
+            $itinerary,
+        });
     });
 
     $saveButton.addEventListener("click", () => {
-        // exclude the first step from the steps
-        // because it is the start location
-        axios
-            .put("/api/itineraries/1", { steps: steps.slice(1) })
-            .then((response) =>
-                console.log("[itinerary:save] success!", response.data)
-            )
-            .catch((errror) => console.error("[itinerary:save]", error));
+        fetch(`/api/itineraries/${itinerary.id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ geometry: itinerary.geometry }),
+        })
+            .then((response) => response.json())
+            .then((data) => console.log("[itinerary:save] success!", data))
+            .catch((error) => console.error("[itinerary:save]", error));
     });
 
-    map.on("load", () => steps.forEach(addStepToMap));
+    map.on("load", () => {
+        map.addSource(itinieraryId, itinerary.geometry);
+        map.addLayer({
+            id: itinieraryId,
+            type: "line",
+            source: itinieraryId,
+            layout: {
+                "line-join": "round",
+                "line-cap": "round",
+            },
+            paint: {
+                "line-color": ["get", "color"],
+                "line-width": 3,
+            },
+        });
+        itinerary.geometry.data.features.forEach(({ geometry, properties }) => {
+            const coordinates =
+                geometry.type === "Point"
+                    ? geometry.coordinates
+                    : geometry.coordinates[geometry.coordinates.length - 1];
+            addDataItem({
+                coordinates,
+                name: properties.name,
+                map,
+                $itinerary,
+            });
+        });
+    });
 
     async function getRoute({ profile, startCoordinates, endCoordinates }) {
         return directions
@@ -154,42 +180,17 @@
             .then((response) => response.body.routes[0]);
     }
 
-    function addStepToMap(step) {
-        const { id, profile, name } = step.properties;
-        map.addSource(`step_${id}`, {
-            type: "geojson",
-            data: {
-                type: "Feature",
-                ...step.geometry,
-            },
-        });
-        map.addLayer({
-            id: `step_${id}`,
-            type: "line",
-            source: `step_${id}`,
-            layout: {
-                "line-join": "round",
-                "line-cap": "round",
-            },
-            paint: {
-                "line-color": PATH_COLORS[profile || "driving"],
-                "line-width": 3,
-            },
-        });
-        new mapboxgl.Marker()
-            .setLngLat(
-                step.geometry.coordinates[step.geometry.coordinates.length - 1]
-            )
-            .addTo(map);
+    function addDataItem({ coordinates, name, map, $itinerary }) {
+        new mapboxgl.Marker().setLngLat(coordinates).addTo(map);
         $itinerary.innerHTML += `<li>${name}</li>`;
     }
 
-    function getNextStepId() {
-        return steps[steps.length - 1].properties.id + 1;
-    }
-
     function getLastStepArrival() {
-        const lastStep = steps[steps.length - 1];
+        const { features } = itinerary.geometry.data;
+        const lastStep = features[features.length - 1];
+        if (lastStep.geometry.type === "Point") {
+            return lastStep.geometry.coordinates;
+        }
         return lastStep.geometry.coordinates[
             lastStep.geometry.coordinates.length - 1
         ];
