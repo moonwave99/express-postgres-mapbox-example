@@ -36,10 +36,10 @@ Since we need it just for storage and not for querying, the [`jsonb` postgres ty
 ```js
 function updateItineraryById({ id, steps }) {
     return db
-        .query("UPDATE itineraries SET steps = ($2)::jsonb WHERE id = $1", [
-            id,
-            JSON.stringify(steps),
-        ])
+        .query(
+            "UPDATE itineraries SET steps = ($2)::jsonb WHERE id = $1 RETURNING *",
+            [id, JSON.stringify(steps)]
+        )
         .then((result) => result.rows[0]);
 }
 ```
