@@ -118,19 +118,17 @@
             map,
             $itinerary,
         });
+
+        await saveItinerary().then((data) =>
+            console.log("[itinerary:save] success!", data)
+        );
     });
 
-    $saveButton.addEventListener("click", () => {
-        fetch(`/api/itineraries/${itinerary.id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ geometry: itinerary.geometry }),
-        })
-            .then((response) => response.json())
-            .then((data) => console.log("[itinerary:save] success!", data))
-            .catch((error) => console.error("[itinerary:save]", error));
+    $itinerary.addEventListener("click", (event) => {
+        const index = [...event.target.parentElement.children].indexOf(
+            event.target
+        );
+        panTo(index);
     });
 
     map.on("load", () => {
@@ -194,5 +192,31 @@
         return lastStep.geometry.coordinates[
             lastStep.geometry.coordinates.length - 1
         ];
+    }
+
+    function panTo(index) {
+        const { features } = itinerary.geometry.data;
+        const feature = features[index];
+        if (feature.geometry.type === "Point") {
+            map.panTo(feature.geometry.coordinates);
+            return;
+        }
+        map.panTo(
+            feature.geometry.coordinates[
+                feature.geometry.coordinates.length - 1
+            ]
+        );
+    }
+
+    async function saveItinerary() {
+        return fetch(`/api/itineraries/${itinerary.id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ geometry: itinerary.geometry }),
+        })
+            .then((response) => response.json())
+            .catch((error) => console.error("[itinerary:save]", error));
     }
 })();

@@ -125,3 +125,7 @@ footer a {
     font-size: 0.8rem;
     padding: 0 0.5rem;
 }
+
+.controls .itinerary li:hover {
+    text-decoration: underline;
+}
